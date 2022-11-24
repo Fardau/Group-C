@@ -1,6 +1,3 @@
-def abc(a):
-    return a+1
-
 # The INVESTMENT game
 
 # Import packages
