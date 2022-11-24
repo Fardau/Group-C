@@ -46,6 +46,6 @@ print(userSetup())
 #Functionality 4: Performance
 
 
-
+raw_data = response.json()
 
 
