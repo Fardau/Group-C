@@ -1,12 +1,18 @@
-print("hello")
-print("this is a test #2")
+# The INVESTMENT game
 
-abc(1)
-print("testtt")
+# Import packages
 
-def abc(a):
-    return a+1
 
+# Get the data from API
+
+
+# Set up a user
+
+
+# Performance
+
+
+# TASKS:
 #Functionality 1: Setup user
 #Functionality 2: Make function
 #Functionality 3: Get the data from API
