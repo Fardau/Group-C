@@ -17,6 +17,7 @@ stocks = response.json()
 stocks['Meta Data']
 
 # STEP 2: Purchase function
+
 # User places an order to purchase stock
 
 # Set up a user
