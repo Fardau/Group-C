@@ -13,47 +13,48 @@ if response.status_code != 200:
     raise ValueError("Could not retrieve data, code:", response.status_code)
 
 # The service sends JSON data, we parse that into a Python datastructure
-raw_data = response.json()
-raw_data['Meta Data']
+stocks = response.json()
+stocks['Meta Data']
 
 # STEP 2: Purchase function
 # User places an order to purchase stock
-# Function
-def print_portfolio():
-    for i in range(len(stocks)):
-        print(i, ":", stocks[i])
 
+# Set up a user
+print("Welcome to the Investment game. Please choose your user name: ")
+
+print("Your starting balance is: ")
+
+
+balance_user1 = 10000
 portfolio_user1 = {
     "Google": 0,
     "Apple": 0
 }
 
-
 def purchase():
     stock_purchase = input("Which stock do you want to buy? ")
-    if stock_purchase in stocks:
-        stock_price = stocks[stock_purchase]['value']
-        portfolio_user1.append(stock_price)
-        print(portfolio_user1)
-    else:
-        print('Stock not available')
-
-balance = 10000
-stock_purchase = input("Which stock do you want to buy? ")
-    if stock_purchase in stocks:
-        print ("the price is", stock[stock_purchase]['value'])
+    if stock_purchase in stocks['Meta Data']['2. Symbol']:
+        print ("Do you want to buy:", stocks['Meta Data']['2. Symbol'])
         num = int(input("How many do you want to buy? "))
-        portfolio[stock_purchase] =+ num
-        balance -= value * num
-        print(portfolio_user1)
+        portfolio_user1[stock_purchase] =+ num
+        # balance_user1 -= value * num #change to stock price
+        print("You purchased: ", purchase())
+        print("Your balance is: ", balance_user1())
     else:
-        print('Stock not available')
+        print('Stock not available', continue_purchase())
 
-next_purchase = input("Do you want to buy another stock? ")
-if next_purchase.upper() == 'N':
-    exit()
+print("What is your next action?", purchase())
 
-# Set up a user
+def print_portfolio():
+    for i in range(len(portfolio_user1)):
+        print(i, ":", portfolio_user1[i])
+
+def continue_purchase():
+    next_purchase = input("Do you want to buy another stock? ")
+    if next_purchase.upper() == 'Y':
+        purchase()
+    else:
+        exit()
 
 
 # STEP 4: Performance
