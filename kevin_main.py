@@ -16,74 +16,81 @@ if response.status_code != 200:
 stocks = response.json()
 stocks['Meta Data']
 
+stocks_value = stocks['Time Series (5min)']
+df = df.DataFrame(data).T.apply(pd.to_numeric)
+df.into()
+df.head()
+
 # STEP 2: Purchase function
 
 # User places an order to purchase stock
 
 # Set up a user
-print("Welcome to the Investment game. Please choose your user name: ")
+print("Welcome to the Investment game. Please choose your user name: ", )
 
-print("Your starting balance is: ")
-
-
-balance_user1 = 10000
-portfolio_user1 = {
-    "Google": 0,
-    "Apple": 0
+#Functionality 1: Setup user
+users = {
+        "Kevin" : {
+            "balance"   : 1,
+            "stocks"    : {"Google": 0, "MSFT": 0 }},
+        "Lucie" : {
+            "balance"   : 1,
+            "stocks"    : {"Google": 0, "MSFT": 0}},
+        "Fardau" : {
+            "balance"  : 1,
+            "stocks"   : {"Google": 0,"MSFT": 0}},
 }
+def userSetup():
+    userx = input("What is your username?")
+#   userxpw = input("EnterPW")
+    if userx in users:
+        print("Welcome","", userx)
+        print("Your balance today is: ", users[userx]['balance'])
+    else:
+        print("Unknown user")
+    return
+print(userSetup())
+
+#user[Fardau]
+#userdata[user]['balance'] += 50
+#userdata[user]['stock']['ibm'] = 20
+
+#print(userdata['Fardau'])
+
 
 def purchase():
     stock_purchase = input("Which stock do you want to buy? ")
     if stock_purchase in stocks['Meta Data']['2. Symbol']:
-        print ("Do you want to buy:", stocks['Meta Data']['2. Symbol'])
-        num = int(input("How many do you want to buy? "))
-        portfolio_user1[stock_purchase] =+ num
-        # balance_user1 -= value * num #change to stock price
-        print("You purchased: ", purchase())
-        print("Your balance is: ", balance_user1())
+        print ("Do you want to buy:", stocks['Meta Data']['2. Symbol'],"?")
+        num = int(input("How many stocks do you want to buy? "))
+        # stock_purchase in users[userSetup()]['stocks']:
+        users[userSetup()]['stock'][stock_purchase] += num
+        users[userSetup()]['balance'] -= num * stocks_value['4. close'][1]
+        # else:
+            # users[userSetup()]['stock'][stock_purchase].append(stock_purchase) =+ num
+        print("You purchased: ", stock_purchase)
+        print("Your new balance is: ", users[userSetup()]['balance'])
     else:
         print('Stock not available', continue_purchase())
 
-print("What is your next action?", purchase())
+#print("What is your next action?", purchase())
 
-def print_portfolio():
-    for i in range(len(portfolio_user1)):
-        print(i, ":", portfolio_user1[i])
+#def print_portfolio():
+    #for i in range(len(portfolio_user1)):
+        #print(i, ":", portfolio_user1[i])
 
 def continue_purchase():
     next_purchase = input("Do you want to buy another stock? ")
     if next_purchase.upper() == 'Y':
         purchase()
     else:
+        print('Thank you for playing the Investment game. Your final balance is: ', users[userSetup()]['balance'])
         exit()
 
 
 # STEP 4: Performance
 
 # TASKS:
-#Functionality 1: Setup user
 
-
-Users = [
-        {"username" : "Kevin",
-        "balance"   : 1,
-        "stocks"    : []},
-        {"username" : "Lucie",
-        "balance"   : 1,
-        "stocks"    : []},
-        {"username" : "Fardau",
-         "balance"  : 1,
-         "stocks"   : []},
-]
-def userSetup():
-    userx = input("EnterUsername")
-#    userxpw = input("EnterPW")
-    if userx is userx:
-        print("Welcome","", userx)
-        #print("Your balance today is", Users(balance)) # To ask RJ
-    else:
-        print("unknown user")
-    return
-print(userSetup())
 
 
