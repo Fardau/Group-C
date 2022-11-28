@@ -5,18 +5,19 @@ import requests
 import pandas as pd
 
 # STEP 1: Get the data from API
-response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&outputsize=full&apikey=demo")
+#response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+stock_purchase+"&interval=5min&outputsize=full&apikey=D19M5YGAB9KUZ8V1")
 # --->> (1) move into function for specific stock
+#get.response = ....... + input + ..... key = D19M5YGAB9KUZ8V1
 
 # Since we are retrieving stuff from a web service, it's a good idea to check for the return status code
 # See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-if response.status_code != 200:
-    raise ValueError("Could not retrieve data, code:", response.status_code)
+#if response.status_code != 200:
+   # raise ValueError("Could not retrieve data, code:", response.status_code)
 
 # The service sends JSON data, we parse that into a Python datastructure
-stocks = response.json()
-stocks_value = stocks['Time Series (5min)']
-df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
+#stocks = response.json()
+#stocks_value = stocks['Time Series (5min)']
+#df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
 
 # Welcome screen:
 print("Welcome to the Investment game. Please choose your user name: ", )
@@ -25,15 +26,15 @@ print("Welcome to the Investment game. Please choose your user name: ", )
 users = {
         'Kevin': {
             "user_name" : "Kevin",
-            "balance"   : 1,
+            "balance"   : 1000,
             "stocks"    : {"Google": 0, "MSFT": 0 }},
         'Lucie': {
             "user_name": "Lucie",
-            "balance"   : 1,
+            "balance"   : 900,
             "stocks"    : {"Google": 0, "MSFT": 0}},
         'Fardau': {
             "user_name": "Fardau",
-            "balance"  : 1,
+            "balance"  : 5000,
             "stocks"   : {"Google": 0,"MSFT": 0}},
 }
 
@@ -59,22 +60,29 @@ current_user = user_setup()
 # Functionality 2: Stock purchase
 def purchase():
     stock_purchase = input("Which stock do you want to buy? ")
-    if stock_purchase in stocks['Meta Data']['2. Symbol']:
-        print ("Do you want to buy:", stocks['Meta Data']['2. Symbol'],"?")
-        num = int(input("How many stocks do you want to buy?"))
+    # STEP 1: Get the data from API
+    response = requests.get(
+        "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + stock_purchase + "&interval=5min&outputsize=full&apikey=D19M5YGAB9KUZ8V1")
+    stocks = response.json()
+    stocks_value = stocks['Time Series (5min)']
+    df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
+
+    print("Do you want to buy:", stock_purchase, "?")
+    num = int(input("How many stocks do you want to buy?"))
+
+    if stock_purchase in users[current_user]['stocks']:
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_purchase] += num
         users[current_user]['balance'] -= num * df['4. close'][1]
+    elif stock_purchase in stocks['Meta Data']['2. Symbol']:
+        users[current_user]['stocks'][stock_purchase] = 0
+        users[current_user]['stocks'][stock_purchase] += num
+        users[current_user]['balance'] -= num * df['4. close'][1]
+        print("You purchased: ", stock_purchase)
+        print("Your new balance is: ", users[current_user]['balance'])
+        print() # -->> (3) show current holdings
     else:
-            users[current_user]['stocks'] = stock_purchase() # -->> (2) Add new stock to the dictionary
-            users[current_user]['stocks'][stock_purchase] += num
-            users[current_user]['balance'] -= num * df['4. close'][1]
-            #stock  # adds to dictionary
-            print("You purchased: ", stock_purchase)
-            print("Your new balance is: ", users[current_user]['balance'])
-            print() # show current holdings
-    else:
-        print('Stock not available')
+       print('Stock not available')
 
 
 # Functionality 3: Stock sell
@@ -86,8 +94,6 @@ def sell():
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_sell] -= num_sell
         users[current_user]['balance'] += num_sell * df['4. close'][1]
-        # else:
-            # users[userSetup()]['stock'][stock_purchase].append(stock_purchase) =+ num
         print("You sold: ", stock_sell, "in quantity of ", num_sell, "and sell price of ", df['4. close'][1],".")
         print("Your new balance is: ", users[current_user]['balance'])
     else:
