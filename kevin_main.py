@@ -6,6 +6,7 @@ import pandas as pd
 
 # STEP 1: Get the data from API
 response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=MSFT&interval=5min&outputsize=full&apikey=demo")
+# --->> (1) move into function for specific stock
 
 # Since we are retrieving stuff from a web service, it's a good idea to check for the return status code
 # See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
@@ -64,10 +65,14 @@ def purchase():
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_purchase] += num
         users[current_user]['balance'] -= num * df['4. close'][1]
-        # else:
-            # users[userSetup()]['stock'][stock_purchase].append(stock_purchase) =+ num
-        print("You purchased: ", stock_purchase)
-        print("Your new balance is: ", users[current_user]['balance'])
+    else:
+            users[current_user]['stocks'] = stock_purchase() # -->> (2) Add new stock to the dictionary
+            users[current_user]['stocks'][stock_purchase] += num
+            users[current_user]['balance'] -= num * df['4. close'][1]
+            #stock  # adds to dictionary
+            print("You purchased: ", stock_purchase)
+            print("Your new balance is: ", users[current_user]['balance'])
+            print() # show current holdings
     else:
         print('Stock not available')
 
@@ -91,7 +96,7 @@ def sell():
 
 # Functionality 4: Exit the game
 def exit():
-    print('Thank you ',current_user, ' for playing the Investment game. Your final balance is: ', users[user_setup()]['balance'])
+    print('Thank you ',current_user, ' for playing the Investment game. Your final balance is: ', users[current_user]['balance'])
 
 
 # Functionality 5: Game menu
@@ -103,7 +108,7 @@ while True:
         sell()
     elif choice.upper() == "E":
         exit()
-    break
+        break
 
 # STEP 4: Performance
 
