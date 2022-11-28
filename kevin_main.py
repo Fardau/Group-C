@@ -20,42 +20,47 @@ df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
 # Welcome screen:
 print("Welcome to the Investment game. Please choose your user name: ", )
 
-
-# Users database
+# Users database:
 users = {
-        "Kevin" : {
+        'Kevin': {
             "user_name" : "Kevin",
             "balance"   : 1,
             "stocks"    : {"Google": 0, "MSFT": 0 }},
-        "Lucie" : {
+        'Lucie': {
             "user_name": "Lucie",
             "balance"   : 1,
             "stocks"    : {"Google": 0, "MSFT": 0}},
-        "Fardau" : {
+        'Fardau': {
             "user_name": "Fardau",
             "balance"  : 1,
             "stocks"   : {"Google": 0,"MSFT": 0}},
 }
 
-# STEP 2: Define the main functions
-#Functionality 1: Setup user
 
-def userSetup():
+# STEP 2: Define the main functions
+# Functionality 1: Setup a user
+def user_setup():
     while True:
         userx = input("What is your username?")
     #   userxpw = input("EnterPW")
         if userx in users:
-            print("Welcome","", users[userx]['user_name'], '')
+            print("Welcome ", users[userx]['user_name'],'!')
             print("Your balance today is: ", users[userx]['balance'])
             return userx
         else:
             print("Unknown user")
             # loop to pick another user or end the game
+
+
+current_user = user_setup()
+
+
+# Functionality 2: Stock purchase
 def purchase():
     stock_purchase = input("Which stock do you want to buy? ")
     if stock_purchase in stocks['Meta Data']['2. Symbol']:
         print ("Do you want to buy:", stocks['Meta Data']['2. Symbol'],"?")
-        num = int(input("How many stocks do you want to buy? "))
+        num = int(input("How many stocks do you want to buy?"))
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_purchase] += num
         users[current_user]['balance'] -= num * df['4. close'][1]
@@ -66,11 +71,13 @@ def purchase():
     else:
         print('Stock not available')
 
+
+# Functionality 3: Stock sell
 def sell():
     stock_sell = input("Which stock do you want to sell? ")
     if stock_sell in stocks['Meta Data']['2. Symbol']:
         print ("Do you want to sell:", stocks['Meta Data']['2. Symbol'],"?")
-        num_sell = int(input("How many stocks of ", stock_sell ,"do you want to sell? "))
+        num_sell = int(input("How many stocks do you want to sell? "))
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_sell] -= num_sell
         users[current_user]['balance'] += num_sell * df['4. close'][1]
@@ -81,27 +88,22 @@ def sell():
     else:
         print('Stock not available')
 
-purchase()
 
-def continue_purchase():
-    next_purchase = input("Do you want to buy another stock? ")
-    if next_purchase.upper() == 'Y':
-        purchase()
-    else:
+# Functionality 4: Exit the game
+def exit():
+    print('Thank you ',current_user, ' for playing the Investment game. Your final balance is: ', users[user_setup()]['balance'])
 
-        exit()
 
-current_user = userSetup()
-
+# Functionality 5: Game menu
 while True:
-    choice = input("What do you want? (press p for purchase, press s for sale, press e to end the game")
-    if choice == "p":
+    choice = input("What do you want to do? (press P for purchase, press S for sale, press E to end the game)")
+    if choice.upper() == "P":
         purchase()
-    elif choice = "s":
+    elif choice.upper() == "S":
         sell()
-    elif choice == "e":
-        print('Thank you for playing the Investment game. Your final balance is: ', users[userSetup()]['balance'])
-        break
+    elif choice.upper() == "E":
+        exit()
+    break
 
 # STEP 4: Performance
 
