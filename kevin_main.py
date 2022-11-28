@@ -4,21 +4,6 @@
 import requests
 import pandas as pd
 
-# STEP 1: Get the data from API
-#response = requests.get("https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol="+stock_purchase+"&interval=5min&outputsize=full&apikey=D19M5YGAB9KUZ8V1")
-# --->> (1) move into function for specific stock
-#get.response = ....... + input + ..... key = D19M5YGAB9KUZ8V1
-
-# Since we are retrieving stuff from a web service, it's a good idea to check for the return status code
-# See: https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
-#if response.status_code != 200:
-   # raise ValueError("Could not retrieve data, code:", response.status_code)
-
-# The service sends JSON data, we parse that into a Python datastructure
-#stocks = response.json()
-#stocks_value = stocks['Time Series (5min)']
-#df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
-
 # Welcome screen:
 print("Welcome to the Investment game. Please choose your user name: ", )
 
@@ -39,7 +24,7 @@ users = {
 }
 
 
-# STEP 2: Define the main functions
+# STEP 1: Define the main functions
 # Functionality 1: Setup a user
 def user_setup():
     while True:
@@ -51,7 +36,7 @@ def user_setup():
             return userx
         else:
             print("Unknown user")
-            # loop to pick another user or end the game
+            # Future functionality: pick another user or end the game
 
 
 current_user = user_setup()
@@ -69,7 +54,7 @@ def purchase():
 
     print("Do you want to buy:", stock_purchase, "?")
     num = int(input("How many stocks do you want to buy?"))
-
+    # Conditions:
     if stock_purchase in users[current_user]['stocks']:
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_purchase] += num
@@ -80,7 +65,7 @@ def purchase():
         users[current_user]['balance'] -= num * df['4. close'][1]
         print("You purchased: ", stock_purchase)
         print("Your new balance is: ", users[current_user]['balance'])
-        print() # -->> (3) show current holdings
+        print() # -->> Future functionality: show current holdings
     else:
        print('Stock not available')
 
@@ -88,8 +73,16 @@ def purchase():
 # Functionality 3: Stock sell
 def sell():
     stock_sell = input("Which stock do you want to sell? ")
-    if stock_sell in stocks['Meta Data']['2. Symbol']:
-        print ("Do you want to sell:", stocks['Meta Data']['2. Symbol'],"?")
+    # STEP 1: Get the data from API
+    response = requests.get(
+        "https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=" + stock_sell + "&interval=5min&outputsize=full&apikey=D19M5YGAB9KUZ8V1")
+    stocks = response.json()
+    stocks_value = stocks['Time Series (5min)']
+    df = pd.DataFrame(stocks_value).T.apply(pd.to_numeric)
+
+    # Step 2: Conditions
+    if stock_sell in users[current_user]['stocks']:
+        print ("Do you want to sell:", stock_sell,"?")
         num_sell = int(input("How many stocks do you want to sell? "))
         # stock_purchase in users[userSetup()]['stocks']:
         users[current_user]['stocks'][stock_sell] -= num_sell
@@ -115,8 +108,6 @@ while True:
     elif choice.upper() == "E":
         exit()
         break
-
-# STEP 4: Performance
 
 
 
